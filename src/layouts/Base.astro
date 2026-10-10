@@ -1,0 +1,31 @@
+---
+import '../styles/global.css';
+import { getData, usingSample } from '../lib/data.js';
+const { title, description = '', page = '' } = Astro.props;
+const d = await getData();
+const s = d.site_settings[0] || {};
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const nav = [['Projects', '/projects/'], ['Publications', '/publications/'], ['Collaborate', '/collaborate/']];
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{title ? `${title} | ${s.name}` : s.name}</title>
+  <meta name="description" content={description || s.subline || ''} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,500;1,600&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  {usingSample && <div class="banner">Preview with sample data. Real content appears once the site connects to Supabase.</div>}
+  <header class="nav"><div class="wrap">
+    <a class="brand" href={`${base}/`}>{s.name}</a>
+    <nav aria-label="Main"><ul>{nav.map(([label, href]) => <li><a href={`${base}${href}`} aria-current={page === label ? 'page' : undefined}>{label}</a></li>)}</ul></nav>
+  </div></header>
+  <slot />
+  <footer><div class="wrap">
+    <p>{s.name}. {s.subline}</p>
+    <p>{s.linkedin_url && <a href={s.linkedin_url}>LinkedIn</a>} {s.x_url && <> · <a href={s.x_url}>X</a></>} {s.instagram_url && <> · <a href={s.instagram_url}>Instagram</a></>}</p>
+  </div></footer>
+</body>
+</html>

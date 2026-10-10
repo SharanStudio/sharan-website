@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import { getData } from '../lib/data.js';
+const d = await getData();
+const m = d.publication_metrics[0] || {};
+const years = [...new Set(d.publications.map((p) => p.year))].sort((a, b) => b - a);
+const link = (p) => (p.pmid ? `https://pubmed.ncbi.nlm.nih.gov/${p.pmid}/` : p.link || null);
+---
+<Base title="Publications" page="Publications">
+  <div class="page-head"><div class="wrap"><h1>Publications</h1><p>Peer-reviewed research and other outputs.</p>
+    {(m.h_index || m.i10_index) ? <div class="metrics">
+      <div><b>{m.h_index}</b><span>h-index</span></div><div><b>{m.i10_index}</b><span>i10-index</span></div>
+      {m.scholar_link && <div><a href={m.scholar_link} style="color:#e9b9a5">Google Scholar →</a></div>}
+      {m.orcid && <div><a href={`https://orcid.org/${m.orcid}`} style="color:#e9b9a5">ORCID →</a></div>}
+    </div> : null}
+  </div></div>
+  <section><div class="wrap">{years.map((y) => <div><h2>{y}</h2>
+    {d.publications.filter((p) => p.year === y).map((p) => <div class="pub"><div>{p.citation}</div>
+      <div class="links">{link(p) && <a href={link(p)}>{p.pmid ? 'PubMed' : 'Link'}</a>}{p.doi && <a href={`https://doi.org/${p.doi}`}>DOI</a>}</div></div>)}
+  </div>)}</div></section>
+</Base>

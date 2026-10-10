@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import { getData } from '../lib/data.js';
+const d = await getData();
+const s = d.site_settings[0] || {};
+const st = d.stats[0] || {};
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const featuredAch = d.achievements.filter((a) => a.is_featured);
+const featuredPubs = d.publications.filter((p) => p.is_featured).slice(0, 5);
+const nums = [[st.officers_mentored, 'Officers mentored'], [st.ongoing_projects, 'Ongoing projects'], [st.states_collaborated, 'States collaborated with'], [st.publications, 'Publications']];
+const count = (slug) => d.projects.filter((p) => (p.research_areas || []).includes(slug)).length;
+---
+<Base>
+  <section class="hero"><div class="wrap">
+    <div>
+      {s.greeting && <p class="hi">{s.greeting}</p>}
+      <h1>{s.name}</h1>
+      {s.subline && <p class="sub">{s.subline}</p>}
+      <ul class="chips">{(s.focus_areas || []).map((f) => <li>{f}</li>)}</ul>
+      <a class="btn" href={`${base}/collaborate/`}>Collaborate with me</a>
+    </div>
+    <div class="portrait">{s.portrait_path ? <img src={`${base}/${s.portrait_path}`} alt={s.name} /> : <span>Portrait</span>}</div>
+  </div></section>
+
+  <div class="stats"><div class="wrap">{nums.map(([n, l]) => <div><b>{n ?? 0}</b><span>{l}</span></div>)}</div></div>
+
+  <section id="about"><div class="wrap two">
+    <div><h2><small>About</small>Work in the field, evidence for policy</h2>{(s.about_text || '').split('\n').filter(Boolean).map((t) => <p>{t}</p>)}</div>
+    <div><h2><small>Education</small>Training</h2>
+      <ul class="edu">{(s.education || []).map((e) => <li><b>{e.degree}</b><span>{[e.institution, e.year].filter(Boolean).join(', ')}</span></li>)}</ul></div>
+  </div></section>
+
+  <section class="alt"><div class="wrap"><h2><small>Teams</small>The teams behind the work</h2>
+    <div class="grid">{d.teams.map((t) => <div class="card"><div class="meta">{t.current_members} members · {t.ongoing_projects} ongoing projects</div><h3>{t.name}</h3><p>{t.tagline}</p></div>)}</div>
+  </div></section>
+
+  <section><div class="wrap"><h2><small>Research areas</small>Where I work</h2>
+    <div class="grid">{d.research_areas.map((r) => <a class="card" style="text-decoration:none" href={`${base}/projects/#${r.slug}`}><h3>{r.name}</h3><p>{count(r.slug)} {count(r.slug) === 1 ? "project" : "projects"}</p></a>)}</div>
+  </div></section>
+
+  <section class="alt"><div class="wrap two">
+    <div><h2><small>Achievements and recognition</small>Awards, fellowships and policy work</h2>
+      {featuredAch.map((a) => <div class="award"><b>{a.title}</b><span>{[a.awarding_body, a.year].filter(Boolean).join(' · ')}</span></div>)}</div>
+    <div><h2><small>Selected publications</small>Recent papers</h2>
+      {featuredPubs.map((p) => <div class="pub">{p.citation}</div>)}
+      <a href={`${base}/publications/`}>All publications →</a></div>
+  </div></section>
+
+  {d.resources.length > 0 && <section><div class="wrap"><h2><small>Open resources</small>Free to use</h2>
+    <div class="grid">{d.resources.map((r) => <a class="card" style="text-decoration:none" href={r.url || (r.doi ? `https://doi.org/${r.doi}` : '#')}><div class="meta">{r.type}</div><h3>{r.title}</h3><p>{r.description}</p></a>)}</div>
+  </div></section>}
+
+  {d.partners.length > 0 && <section class="alt"><div class="wrap"><h2><small>Partners</small>Working with</h2>
+    <div class="grid">{d.partners.map((p) => <a href={p.url}><img src={`${base}/${p.logo_path}`} alt={p.name} height="56" /></a>)}</div></div></section>}
+</Base>

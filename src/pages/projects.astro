@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import { getData } from '../lib/data.js';
+const d = await getData();
+const yr = (x) => (x ? x.slice(0, 4) : '');
+const span = (p) => `${yr(p.start_date)}${p.ongoing ? ' – present' : p.end_date ? ` – ${yr(p.end_date)}` : ''}`;
+const area = Object.fromEntries(d.research_areas.map((r) => [r.slug, r.name]));
+const groups = d.research_areas.map((r) => ({ ...r, items: d.projects.filter((p) => (p.research_areas || []).includes(r.slug)) })).filter((g) => g.items.length);
+const teamName = Object.fromEntries(d.teams.map((t) => [t.slug, t.name]));
+---
+<Base title="Projects" page="Projects">
+  <div class="page-head"><div class="wrap"><h1>Projects</h1><p>Research and programmes, grouped by area.</p></div></div>
+  {groups.map((g) => <section id={g.slug}><div class="wrap"><h2>{g.name}</h2>
+    <div class="grid">{g.items.map((p) => <div class="card"><div class="meta">{span(p)} · {p.status}</div><h3>{p.name}</h3>
+      {p.summary && <p>{p.summary}</p>}
+      <p>{[teamName[p.team_slug], p.funder].filter(Boolean).join(' · ')}</p>
+      {(p.states || []).length > 0 && <p>{p.states.join(', ')}</p>}</div>)}</div>
+  </div></section>)}
+</Base>

@@ -1,0 +1,43 @@
+{
+  "site_settings": [{
+    "greeting": "Hello, I am", "name": "Sharan Murali",
+    "subline": "Scientist C (Medical), ICMR-National Institute of Epidemiology, Chennai",
+    "focus_areas": ["Field Epidemiology", "Non-communicable Diseases", "Digital Health"],
+    "portrait_path": null,
+    "about_text": "Sample text. Your about paragraph from the Website page in the app appears here.",
+    "education": [{ "degree": "MD, Community Medicine", "institution": "JIPMER", "year": "" }],
+    "contact_emails": ["name@example.org"], "linkedin_url": "https://www.linkedin.com/", "x_url": "https://x.com/", "instagram_url": "https://www.instagram.com/"
+  }],
+  "stats": [{ "officers_mentored": 120, "ongoing_projects": 8, "publications": 40, "states_collaborated": 14 }],
+  "teams": [
+    { "id": "1", "name": "ADARV", "slug": "adarv", "tagline": "AI-enabled public health analytics", "mission": "Sample mission line.", "current_members": 4, "ongoing_projects": 2 },
+    { "id": "2", "name": "Project Namak", "slug": "namak", "tagline": "Salt and blood pressure", "mission": "Sample mission line.", "current_members": 3, "ongoing_projects": 1 },
+    { "id": "3", "name": "FETP", "slug": "fetp", "tagline": "Training field epidemiologists", "mission": "Sample mission line.", "current_members": 5, "ongoing_projects": 3 },
+    { "id": "4", "name": "CKDu", "slug": "ckdu", "tagline": "Kidney disease of unknown cause", "mission": "Sample mission line.", "current_members": 3, "ongoing_projects": 2 }
+  ],
+  "research_areas": [
+    { "name": "Communicable Diseases", "slug": "communicable" },
+    { "name": "Noncommunicable Diseases", "slug": "noncommunicable" },
+    { "name": "Reproductive and Child Health", "slug": "reproductive-child-health" },
+    { "name": "Digital Health", "slug": "digital-health" },
+    { "name": "Field Epidemiology", "slug": "field-epidemiology" }
+  ],
+  "projects": [
+    { "id": "p1", "name": "Sample project one", "type": "Extramural", "status": "Ongoing", "funder": "Sample funder", "research_areas": ["noncommunicable"], "states": ["Tamil Nadu"], "team_slug": "namak", "start_date": "2024-01-01", "ongoing": true, "summary": "A one or two sentence description appears here." },
+    { "id": "p2", "name": "Sample project two", "type": "Intramural", "status": "Ongoing", "funder": "ICMR", "research_areas": ["digital-health"], "states": ["National (Pan-India)"], "team_slug": "adarv", "start_date": "2025-04-01", "ongoing": true, "summary": "A one or two sentence description appears here." }
+  ],
+  "publications": [
+    { "id": "b1", "citation": "Sample citation. Journal name. 2025;1(1):1-10.", "pmid": "", "doi": "", "year": 2025, "summary": "", "is_featured": true, "type": "Research publication" },
+    { "id": "b2", "citation": "Sample citation. Journal name. 2024;2(1):11-20.", "pmid": "", "doi": "", "year": 2024, "summary": "", "is_featured": true, "type": "Research publication" }
+  ],
+  "publication_metrics": [{ "h_index": 0, "i10_index": 0, "orcid": "", "scholar_link": "" }],
+  "achievements": [
+    { "id": "a1", "title": "Emerging Authors Program awardee (twice)", "category": "Fellowship or grant", "awarding_body": "CDC", "year": "", "is_featured": true },
+    { "id": "a2", "title": "Early Career Recognition Award", "category": "Award", "awarding_body": "ICMR-NIE", "year": "", "is_featured": true },
+    { "id": "a3", "title": "Best Paper Award, 2nd SafetyNet Conference, Kuala Lumpur", "category": "Award", "awarding_body": "SafetyNet", "year": "", "is_featured": true }
+  ],
+  "resources": [
+    { "id": "r1", "type": "Toolkit", "title": "Sample open resource", "description": "Short description.", "url": "#" }
+  ],
+  "partners": []
+}

@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import { getData } from '../lib/data.js';
+const d = await getData();
+const s = d.site_settings[0] || {};
+---
+<Base title="Collaborate" page="Collaborate">
+  <div class="page-head"><div class="wrap"><h1>Collaborate</h1><p>For research partnerships, training and technical support, write to me or find me online.</p></div></div>
+  <section><div class="wrap contact" style="max-width:640px">
+    {(s.contact_emails || []).map((e) => <a href={`mailto:${e}`}>✉ {e}</a>)}
+    {s.linkedin_url && <a href={s.linkedin_url}>LinkedIn</a>}
+    {s.x_url && <a href={s.x_url}>X (Twitter)</a>}
+    {s.instagram_url && <a href={s.instagram_url}>Instagram</a>}
+  </div></section>
+</Base>
