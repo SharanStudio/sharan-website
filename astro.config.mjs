@@ -1,3 +1,6 @@
 import { defineConfig } from 'astro/config';
-// Set `site` (and `base` if the site lives under a repo path) before the first deploy.
-export default defineConfig({ site: 'https://sharanstudio.github.io' });
+// SITE_URL and SITE_BASE come from the deploy workflow. For a custom domain, set SITE_URL to it and SITE_BASE to '/'.
+export default defineConfig({
+  site: process.env.SITE_URL || 'https://sharanstudio.github.io',
+  base: process.env.SITE_BASE || '/',
+});
