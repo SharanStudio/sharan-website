@@ -1,0 +1,41 @@
+---
+import Base from '../layouts/Base.astro';
+import photos from '../data/photos.json';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const albums = photos.albums.filter((a) => a.photos.length);
+const all = albums.flatMap((a) => a.photos.map((p) => ({ ...p, album: a.slug })));
+---
+<Base title="Photo album" page="Photos">
+  <div class="page-head"><div class="wrap"><h1>Photo album</h1><p>Moments from the field, trainings and conferences.</p></div></div>
+  <section><div class="wrap">
+    {albums.length === 0 ? <p class="empty">Photos will appear here soon.</p> : <>
+    {albums.length > 1 && <ul class="filters" aria-label="Choose an album">
+      <li><button type="button" data-f="" aria-pressed="true">All</button></li>
+      {albums.map((a) => <li><button type="button" data-f={a.slug} aria-pressed="false">{a.title}</button></li>)}
+    </ul>}
+    <div class="masonry" id="grid">{all.map((p, i) => <button type="button" data-album={p.album} data-i={i} aria-label={`Open photo: ${p.caption || 'photo'}`}>
+      <img src={`${base}/${p.file}`} alt={p.caption || ''} width={p.w} height={p.h} loading="lazy" decoding="async" />
+      {p.caption && <figcaption>{p.caption}</figcaption>}</button>)}</div></>}
+  </div></section>
+  <dialog class="lb" id="lb" aria-label="Photo viewer">
+    <button class="x" type="button" aria-label="Close">×</button><button class="pv" type="button" aria-label="Previous photo">‹</button><button class="nx" type="button" aria-label="Next photo">›</button>
+    <div class="stage"><img id="lbimg" alt="" /><p id="lbcap"></p></div>
+  </dialog>
+  <script is:inline define:vars={{ all, base }}>
+    const grid = document.getElementById('grid'); if (grid) {
+      const dlg = document.getElementById('lb'), img = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+      const tiles = [...grid.querySelectorAll('button')];
+      let order = [], pos = 0;
+      const show = () => { const p = all[order[pos]]; img.src = base + '/' + p.file; img.alt = p.caption || ''; cap.textContent = p.caption || ''; };
+      const open = (i) => { order = tiles.filter((t) => !t.hidden).map((t) => +t.dataset.i); pos = order.indexOf(i); show(); dlg.showModal(); };
+      const step = (d) => { pos = (pos + d + order.length) % order.length; show(); };
+      tiles.forEach((t) => t.addEventListener('click', () => open(+t.dataset.i)));
+      dlg.querySelector('.x').onclick = () => dlg.close();
+      dlg.querySelector('.pv').onclick = () => step(-1); dlg.querySelector('.nx').onclick = () => step(1);
+      dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+      dlg.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1); });
+      const fb = document.querySelectorAll('.filters button');
+      fb.forEach((b) => b.addEventListener('click', () => { fb.forEach((x) => x.setAttribute('aria-pressed', x === b)); tiles.forEach((t) => { t.hidden = !!b.dataset.f && t.dataset.album !== b.dataset.f; }); }));
+    }
+  </script>
+</Base>

@@ -1,0 +1,14 @@
+{
+  "albums": [
+    { "slug": "field", "title": "In the field", "photos": [
+      { "file": "photos/sample/field-1.svg", "caption": "Sample caption", "w": 1200, "h": 800 },
+      { "file": "photos/sample/field-2.svg", "caption": "Sample caption", "w": 800, "h": 1000 } ] },
+    { "slug": "training", "title": "Training and workshops", "photos": [
+      { "file": "photos/sample/training-1.svg", "caption": "Sample caption", "w": 1200, "h": 800 },
+      { "file": "photos/sample/training-2.svg", "caption": "Sample caption", "w": 800, "h": 1000 } ] },
+    { "slug": "conferences", "title": "Conferences", "photos": [
+      { "file": "photos/sample/conference-1.svg", "caption": "Sample caption", "w": 1200, "h": 800 },
+      { "file": "photos/sample/conference-2.svg", "caption": "Sample caption", "w": 1200, "h": 800 } ] }
+  ],
+  "sample": true
+}
