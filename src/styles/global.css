@@ -42,3 +42,24 @@ section{padding:64px 0}
 footer{background:var(--navy);color:#cfd3e4;padding:40px 0;font-size:.92rem} footer a{color:#e9b9a5}
 .contact a{display:block;padding:14px 0;border-bottom:1px solid var(--line);font-size:1.1rem}
 @media(max-width:760px){.hero .wrap,.two{grid-template-columns:1fr}.stats .wrap{grid-template-columns:repeat(2,1fr)}.nav ul{gap:14px}.nav .wrap{padding-block:8px}section{padding:44px 0}.portrait{max-width:240px;order:-1}}
+body{display:flex;flex-direction:column;min-height:100vh} footer{margin-top:auto}
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 28px;padding:0;list-style:none}
+.filters button{font:inherit;font-size:.9rem;cursor:pointer;border:1px solid var(--line);background:var(--paper);color:var(--navy);padding:7px 16px;border-radius:999px}
+.filters button[aria-pressed=true]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.filters button:focus-visible,.search:focus-visible{outline:3px solid var(--rust);outline-offset:2px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px} .tag{font-size:.75rem;background:#efe6d3;color:#6b4b2a;padding:3px 10px;border-radius:999px}
+.tag.team{background:var(--navy);color:#fff}
+.card.proj{display:flex;flex-direction:column} .card.proj .tags{margin-top:auto;padding-top:12px}
+.empty{color:var(--mute);font-style:italic}
+.yeargroup{display:grid;grid-template-columns:110px 1fr;gap:20px;padding:28px 0;border-top:1px solid var(--line)}
+.yeargroup h2{margin:0;position:sticky;top:76px;align-self:start}
+.pub{padding:0 0 18px;border:0} .pub+.pub{padding-top:18px;border-top:1px dashed var(--line)}
+.pill{display:inline-block;margin:10px 8px 0 0;padding:4px 12px;border:1px solid var(--rust);border-radius:999px;font-size:.8rem;text-decoration:none;color:var(--rust)}
+.pill:hover{background:var(--rust);color:#fff}
+.search{width:100%;max-width:460px;font:inherit;padding:11px 18px;border:1px solid var(--line);border-radius:999px;background:var(--paper);margin-bottom:8px}
+.count{color:var(--mute);font-size:.9rem;margin:0 0 8px}
+.metrics.cards div{background:rgba(255,255,255,.08);border:1px solid #3b4b7c;border-radius:12px;padding:14px 22px}
+.contactgrid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.contactgrid a.card{text-decoration:none;color:var(--ink);transition:transform .15s,border-color .15s} .contactgrid a.card:hover{border-color:var(--rust);transform:translateY(-2px)}
+.contactgrid .ico{font-size:1.4rem;color:var(--rust)} .contactgrid h3{margin:.3em 0 .1em;font-size:1.1rem} .contactgrid p{word-break:break-all}
+@media(max-width:760px){.yeargroup{grid-template-columns:1fr;gap:6px}.yeargroup h2{position:static}}

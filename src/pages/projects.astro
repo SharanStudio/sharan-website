@@ -5,15 +5,33 @@ const d = await getData();
 const yr = (x) => (x ? x.slice(0, 4) : '');
 const span = (p) => `${yr(p.start_date)}${p.ongoing ? ' – present' : p.end_date ? ` – ${yr(p.end_date)}` : ''}`;
 const area = Object.fromEntries(d.research_areas.map((r) => [r.slug, r.name]));
-const groups = d.research_areas.map((r) => ({ ...r, items: d.projects.filter((p) => (p.research_areas || []).includes(r.slug)) })).filter((g) => g.items.length);
-const teamName = Object.fromEntries(d.teams.map((t) => [t.slug, t.name]));
+const team = Object.fromEntries(d.teams.map((t) => [t.slug, t.name]));
+const projects = [...d.projects].sort((a, b) => (b.ongoing - a.ongoing) || String(b.start_date).localeCompare(String(a.start_date)));
+const usedAreas = d.research_areas.filter((r) => projects.some((p) => (p.research_areas || []).includes(r.slug)));
 ---
 <Base title="Projects" page="Projects">
-  <div class="page-head"><div class="wrap"><h1>Projects</h1><p>Research and programmes, grouped by area.</p></div></div>
-  {groups.map((g) => <section id={g.slug}><div class="wrap"><h2>{g.name}</h2>
-    <div class="grid">{g.items.map((p) => <div class="card"><div class="meta">{span(p)} · {p.status}</div><h3>{p.name}</h3>
+  <div class="page-head"><div class="wrap"><h1>Projects</h1><p>Research and programmes. Filter by research area.</p></div></div>
+  <section><div class="wrap">
+    <ul class="filters" aria-label="Filter by research area">
+      <li><button type="button" data-f="" aria-pressed="true">All</button></li>
+      {usedAreas.map((r) => <li><button type="button" data-f={r.slug} aria-pressed="false">{r.name}</button></li>)}
+    </ul>
+    <div class="grid" id="list">{projects.map((p) => <div class="card proj" data-areas={(p.research_areas || []).join(' ')}>
+      <div class="meta">{span(p)} · {p.status}</div><h3>{p.name}</h3>
       {p.summary && <p>{p.summary}</p>}
-      <p>{[teamName[p.team_slug], p.funder].filter(Boolean).join(' · ')}</p>
-      {(p.states || []).length > 0 && <p>{p.states.join(', ')}</p>}</div>)}</div>
-  </div></section>)}
+      {p.funder && <p>Funder: {p.funder}</p>}
+      {(p.states || []).length > 0 && <p>{p.states.join(', ')}</p>}
+      <div class="tags">{p.team_slug && team[p.team_slug] && <span class="tag team">{team[p.team_slug]}</span>}{(p.research_areas || []).map((s) => <span class="tag">{area[s] || s}</span>)}</div>
+    </div>)}</div>
+    <p class="empty" id="none" hidden>No projects in this area yet.</p>
+  </div></section>
+  <script is:inline>
+    const btns = document.querySelectorAll('.filters button'), cards = document.querySelectorAll('#list .card');
+    btns.forEach((b) => b.addEventListener('click', () => {
+      btns.forEach((x) => x.setAttribute('aria-pressed', x === b));
+      let n = 0;
+      cards.forEach((c) => { const show = !b.dataset.f || c.dataset.areas.split(' ').includes(b.dataset.f); c.hidden = !show; n += show; });
+      document.getElementById('none').hidden = n > 0;
+    }));
+  </script>
 </Base>

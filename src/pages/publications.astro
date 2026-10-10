@@ -8,14 +8,28 @@ const link = (p) => (p.pmid ? `https://pubmed.ncbi.nlm.nih.gov/${p.pmid}/` : p.l
 ---
 <Base title="Publications" page="Publications">
   <div class="page-head"><div class="wrap"><h1>Publications</h1><p>Peer-reviewed research and other outputs.</p>
-    {(m.h_index || m.i10_index) ? <div class="metrics">
+    {(m.h_index || m.i10_index) ? <div class="metrics cards">
       <div><b>{m.h_index}</b><span>h-index</span></div><div><b>{m.i10_index}</b><span>i10-index</span></div>
       {m.scholar_link && <div><a href={m.scholar_link} style="color:#e9b9a5">Google Scholar →</a></div>}
       {m.orcid && <div><a href={`https://orcid.org/${m.orcid}`} style="color:#e9b9a5">ORCID →</a></div>}
     </div> : null}
   </div></div>
-  <section><div class="wrap">{years.map((y) => <div><h2>{y}</h2>
-    {d.publications.filter((p) => p.year === y).map((p) => <div class="pub"><div>{p.citation}</div>
-      <div class="links">{link(p) && <a href={link(p)}>{p.pmid ? 'PubMed' : 'Link'}</a>}{p.doi && <a href={`https://doi.org/${p.doi}`}>DOI</a>}</div></div>)}
-  </div>)}</div></section>
+  <section style="padding-top:36px"><div class="wrap">
+    <input class="search" id="q" type="search" placeholder="Search title, journal or year" aria-label="Search publications" />
+    <p class="count" id="count" aria-live="polite">{d.publications.length} publications</p>
+    <div id="all">{years.map((y) => <div class="yeargroup" data-year={y}><h2>{y}</h2><div>
+      {d.publications.filter((p) => p.year === y).map((p) => <div class="pub"><div>{p.citation}</div>
+        {p.summary && <p style="color:var(--mute);font-size:.92rem;margin:.4em 0 0">{p.summary}</p>}
+        {link(p) && <a class="pill" href={link(p)}>{p.pmid ? 'PubMed' : 'Link'}</a>}{p.doi && <a class="pill" href={`https://doi.org/${p.doi}`}>DOI</a>}</div>)}
+    </div></div>)}</div>
+  </div></section>
+  <script is:inline>
+    const q = document.getElementById('q'), pubs = document.querySelectorAll('.pub'), groups = document.querySelectorAll('.yeargroup');
+    q.addEventListener('input', () => {
+      const t = q.value.trim().toLowerCase(); let n = 0;
+      pubs.forEach((p) => { const s = !t || (p.textContent + ' ' + p.closest('.yeargroup').dataset.year).toLowerCase().includes(t); p.hidden = !s; n += s; });
+      groups.forEach((g) => { g.hidden = ![...g.querySelectorAll('.pub')].some((p) => !p.hidden); });
+      document.getElementById('count').textContent = n + (n === 1 ? ' publication' : ' publications');
+    });
+  </script>
 </Base>

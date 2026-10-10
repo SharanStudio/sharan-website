@@ -3,13 +3,24 @@ import Base from '../layouts/Base.astro';
 import { getData } from '../lib/data.js';
 const d = await getData();
 const s = d.site_settings[0] || {};
+const contacts = [
+  ...(s.contact_emails || []).map((e) => ({ ico: '✉', label: 'Email', text: e, href: `mailto:${e}` })),
+  s.linkedin_url && { ico: 'in', label: 'LinkedIn', text: 'Connect professionally', href: s.linkedin_url },
+  s.x_url && { ico: '𝕏', label: 'X (Twitter)', text: 'Follow for updates', href: s.x_url },
+  s.instagram_url && { ico: '◎', label: 'Instagram', text: 'Photos from the field', href: s.instagram_url },
+].filter(Boolean);
+const ways = [
+  ['Research partnerships', 'Joint studies, protocols and manuscripts in epidemiology and public health.'],
+  ['Training and mentorship', 'Field epidemiology training, mentoring of officers and scholars.'],
+  ['Analytics and digital health', 'Data analytics, surveillance and digital tools for programmes.'],
+];
 ---
 <Base title="Collaborate" page="Collaborate">
-  <div class="page-head"><div class="wrap"><h1>Collaborate</h1><p>For research partnerships, training and technical support, write to me or find me online.</p></div></div>
-  <section><div class="wrap contact" style="max-width:640px">
-    {(s.contact_emails || []).map((e) => <a href={`mailto:${e}`}>✉ {e}</a>)}
-    {s.linkedin_url && <a href={s.linkedin_url}>LinkedIn</a>}
-    {s.x_url && <a href={s.x_url}>X (Twitter)</a>}
-    {s.instagram_url && <a href={s.instagram_url}>Instagram</a>}
+  <div class="page-head"><div class="wrap"><h1>Collaborate</h1><p>For partnerships, training and technical support, write to me or find me online.</p></div></div>
+  <section><div class="wrap"><h2><small>Get in touch</small>Contact</h2>
+    <div class="contactgrid">{contacts.map((c) => <a class="card" href={c.href}><span class="ico" aria-hidden="true">{c.ico}</span><h3>{c.label}</h3><p>{c.text}</p></a>)}</div>
+  </div></section>
+  <section class="alt"><div class="wrap"><h2><small>Ways to work together</small>How I can help</h2>
+    <div class="grid">{ways.map(([t, p]) => <div class="card"><h3>{t}</h3><p>{p}</p></div>)}</div>
   </div></section>
 </Base>
