@@ -39,7 +39,7 @@ section{padding:64px 0}
 .page-head p{color:#d9dbe6;margin:.4em 0 0}
 .metrics{display:flex;gap:28px;flex-wrap:wrap;margin-top:22px} .metrics div b{display:block;font:600 2rem var(--serif);color:#e9b9a5} .metrics div span{font-size:.85rem;color:#d9dbe6}
 .banner{background:#fff3cd;color:#664d03;text-align:center;padding:6px 12px;font-size:.85rem}
-footer{background:var(--navy);color:#cfd3e4;padding:40px 0;font-size:.92rem} footer a{color:#e9b9a5}
+
 .contact a{display:block;padding:14px 0;border-bottom:1px solid var(--line);font-size:1.1rem}
 @media(max-width:760px){.hero .wrap,.two{grid-template-columns:1fr}.stats .wrap{grid-template-columns:repeat(2,1fr)}.nav ul{gap:14px}.nav .wrap{padding-block:8px}section{padding:44px 0}.portrait{max-width:240px;order:-1}}
 body{display:flex;flex-direction:column;min-height:100vh} footer{margin-top:auto}
@@ -88,3 +88,18 @@ dialog.lb{border:0;padding:0;background:transparent;max-width:100vw;max-height:1
 details.past{margin-top:28px} details.past summary{cursor:pointer;color:var(--navy);font-weight:600}
 .plist{list-style:none;margin:0;padding:0} .plist li{padding:14px 0;border-bottom:1px solid var(--line)} .plist b{color:var(--navy)} .plist span{display:block;color:var(--mute);font-size:.9rem}
 @media(max-width:760px){.nav .wrap{flex-wrap:wrap;gap:0;padding-top:10px;padding-bottom:0}.nav nav{width:100%;overflow-x:auto}.nav ul{flex-wrap:nowrap;white-space:nowrap;padding:8px 0 10px}.nav li a{display:inline-block;padding-bottom:4px}}
+
+/* Light header so it separates from the navy hero */
+.nav{background:rgba(255,253,248,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav .brand{color:var(--navy)}
+.nav li a{color:#3d4560} .nav li a:hover,.nav li a[aria-current]{color:var(--navy);border-bottom-color:var(--rust)}
+/* Footer, after the Canva mockup */
+footer{background:#27327a;color:#fff;font-size:.95rem}
+.foot{display:grid;grid-template-columns:1fr 1fr;gap:32px;padding-top:44px;padding-bottom:36px}
+.fh{font:600 .8rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#c9cff0;font-style:normal;margin:0 0 16px}
+footer .social{display:flex;gap:18px;margin:0} footer .social a{color:#fff;display:inline-flex;padding:4px;border-radius:8px} footer .social a:hover{color:#e9b9a5}
+footer .mails{display:flex;flex-direction:column;gap:6px;margin:0} footer .mails a{color:#fff;font-weight:600;text-decoration:none} footer .mails a:hover{text-decoration:underline}
+footer a:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.legal{position:relative;padding-top:16px;padding-bottom:22px;font-size:.82rem;color:#c9cff0}
+@media(max-width:760px){.foot{grid-template-columns:1fr;gap:26px}}
+.legal::before{content:'';position:absolute;top:0;left:20px;right:20px;border-top:1px solid rgba(255,255,255,.18)}
