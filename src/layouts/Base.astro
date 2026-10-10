@@ -5,7 +5,7 @@ const { title, description = '', page = '' } = Astro.props;
 const d = await getData();
 const s = d.site_settings[0] || {};
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const nav = [['Projects', '/projects/'], ['Publications', '/publications/'], ['Photos', '/photos/'], ['Collaborate', '/collaborate/']];
+const nav = [['Teams', '/teams/'], ['Projects', '/projects/'], ['Publications', '/publications/'], ['Photos', '/photos/'], ['Collaborate', '/collaborate/']];
 ---
 <!doctype html>
 <html lang="en">

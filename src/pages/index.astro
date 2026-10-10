@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getData } from '../lib/data.js';
+import { plural } from '../lib/people.js';
 const d = await getData();
 const s = d.site_settings[0] || {};
 const st = d.stats[0] || {};
@@ -31,7 +32,7 @@ const count = (slug) => d.projects.filter((p) => (p.research_areas || []).includ
   </div></section>
 
   <section class="alt"><div class="wrap"><h2><small>Teams</small>The teams behind the work</h2>
-    <div class="grid">{d.teams.map((t) => <div class="card"><div class="meta">{t.current_members} members · {t.ongoing_projects} ongoing projects</div><h3>{t.name}</h3><p>{t.tagline}</p></div>)}</div>
+    <div class="grid">{d.teams.map((t) => <a class="card" style="text-decoration:none" href={`${base}/teams/${t.slug}/`}><div class="meta">{plural(t.current_members, 'member')} · {plural(t.ongoing_projects, 'ongoing project')}</div><h3>{t.name}</h3><p>{t.tagline}</p></a>)}</div><p style="margin-top:20px"><a href={`${base}/teams/`}>Meet the teams →</a></p>
   </div></section>
 
   <section><div class="wrap"><h2><small>Research areas</small>Where I work</h2>

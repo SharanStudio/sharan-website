@@ -1,0 +1,18 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getData } from '../../lib/data.js';
+import { teamView, initials, plural } from '../../lib/people.js';
+const d = await getData();
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const teams = d.teams.map((t) => ({ ...t, v: teamView(d, t) }));
+---
+<Base title="Teams" page="Teams">
+  <div class="page-head"><div class="wrap"><h1>Teams</h1><p>The people and programmes behind the work. Each team owns its projects and shares its outputs.</p></div></div>
+  <section><div class="wrap"><div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">
+    {teams.map((t) => <a class="card teamcard" href={`${base}/teams/${t.slug}/`}>
+      <div class="meta">{plural(t.v.current.length, 'member')} · {plural(t.v.projects.filter((p) => p.ongoing).length, 'ongoing project')}</div>
+      <h3>{t.name}</h3>{t.tagline && <p><b>{t.tagline}</b></p>}<p class="mission">{t.mission}</p>
+      <div class="avatars" aria-hidden="true">{t.v.current.slice(0, 5).map((m) => <span class="av">{m.photo_path ? <img src={`${base}/${m.photo_path}`} alt="" /> : initials(m.full_name)}</span>)}</div>
+      <span class="go">View team →</span></a>)}
+  </div></div></section>
+</Base>

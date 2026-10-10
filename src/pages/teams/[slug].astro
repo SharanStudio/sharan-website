@@ -1,0 +1,39 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getData } from '../../lib/data.js';
+import { teamView, initials } from '../../lib/people.js';
+export async function getStaticPaths() {
+  const d = await getData();
+  return d.teams.map((t) => ({ params: { slug: t.slug }, props: { team: t } }));
+}
+const { team } = Astro.props;
+const d = await getData();
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const v = teamView(d, team);
+const ongoing = v.projects.filter((p) => p.ongoing);
+const yr = (x) => (x ? x.slice(0, 4) : '');
+const card = (m) => m;
+---
+<Base title={team.name} page="Teams" description={team.tagline || ''}>
+  <div class="page-head"><div class="wrap">
+    <p class="crumb"><a href={`${base}/teams/`}>← All teams</a></p>
+    <h1>{team.name}</h1>{team.tagline && <p>{team.tagline}</p>}
+    <div class="statrow"><div><b>{v.current.length}</b><span>Members</span></div><div><b>{ongoing.length}</b><span>Ongoing projects</span></div><div><b>{v.publications.length}</b><span>Publications</span></div></div>
+  </div></div>
+  {team.mission && <section class="alt" style="padding:40px 0"><div class="wrap" style="max-width:760px"><h2><small>Mission</small>What this team does</h2><p>{team.mission}</p></div></section>}
+  <section><div class="wrap"><h2><small>People</small>Members</h2>
+    <div class="people">{v.current.map((m) => <div class="person">
+      <div class="av lg">{m.photo_path ? <img src={`${base}/${m.photo_path}`} alt={m.full_name} /> : initials(m.full_name)}</div>
+      {m.isLead && <span class="lead">Team lead</span>}<h3>{m.full_name}</h3><div class="role">{m.role}</div>{m.designation && <p>{m.designation}</p>}
+      {m.bio && <p>{m.bio}</p>}{m.linkedin_url && <p><a href={m.linkedin_url}>LinkedIn</a></p>}</div>)}</div>
+    {v.past.length > 0 && <details class="past"><summary>Past members ({v.past.length})</summary>
+      <ul class="plist">{v.past.map((m) => <li><b>{m.full_name}</b><span>{[m.role, m.designation].filter(Boolean).join(' · ')}</span></li>)}</ul></details>}
+  </div></section>
+  <section class="alt"><div class="wrap two">
+    <div><h2><small>Projects</small>Work in this team</h2>
+      {v.projects.length ? <ul class="plist">{v.projects.map((p) => <li><b>{p.name}</b><span>{yr(p.start_date)}{p.ongoing ? ' – present' : p.end_date ? ` – ${yr(p.end_date)}` : ''} · {p.status}{p.funder ? ` · ${p.funder}` : ''}</span>{p.summary && <span>{p.summary}</span>}</li>)}</ul> : <p class="empty">No public projects yet.</p>}</div>
+    <div><h2><small>Publications</small>Selected outputs</h2>
+      {v.publications.length ? v.publications.slice(0, 6).map((p) => <div class="pub">{p.citation}</div>) : <p class="empty">No tagged publications yet.</p>}
+      <a href={`${base}/publications/`}>All publications →</a></div>
+  </div></section>
+</Base>
