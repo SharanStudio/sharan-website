@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import { getData } from '../lib/data.js';
+const d = await getData();
+// Every public award, fellowship, talk, role and policy contribution. The home page shows only the featured ones.
+const items = d.achievements;
+const years = [...new Set(items.map((a) => a.year || ''))].sort((a, b) => (b || '0').localeCompare(a || '0'));
+const meta = (a) => [a.category, a.awarding_body, a.level].filter(Boolean).join(' · ');
+---
+<Base title="Recognitions" page="Recognitions">
+  <div class="page-head"><div class="wrap"><h1>Recognitions</h1><p>Awards, fellowships, invited roles and policy work.</p></div></div>
+  <section style="padding-top:36px"><div class="wrap">
+    {items.length === 0 && <p class="count">Recognitions will appear here soon.</p>}
+    {years.map((y) => <div class="yeargroup"><h2>{y || 'Undated'}</h2><div>
+      {items.filter((a) => (a.year || '') === y).map((a) => <div class="award"><b>{a.title}</b>
+        {meta(a) && <span>{meta(a)}</span>}
+        {a.description && <span>{a.description}</span>}
+        {a.link && <a class="pill" href={a.link}>Read more</a>}</div>)}
+    </div></div>)}
+  </div></section>
+</Base>
