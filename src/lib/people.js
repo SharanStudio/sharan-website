@@ -12,4 +12,18 @@ export function teamView(d, team) {
     publications: d.publications.filter((p) => p.team_slug === team.slug),
   };
 }
+// Split a bio into its first sentence and the remainder (skips "Dr.", "Prof." etc.).
+const ABBR = /^(dr|mr|mrs|ms|prof|st|sr|jr|md|mph)$/i;
+export function splitBio(bio = '') {
+  const text = bio.trim();
+  const re = /[.!?]+(?=\s+\S)/g;
+  let m;
+  while ((m = re.exec(text))) {
+    const word = text.slice(0, m.index).split(/\s+/).pop();
+    if (ABBR.test(word)) continue;
+    const cut = m.index + m[0].length;
+    return [text.slice(0, cut).trim(), text.slice(cut).trim()];
+  }
+  return [text, ''];
+}
 export const plural = (n, one, many = one + 's') => `${n} ${n === 1 ? one : many}`;

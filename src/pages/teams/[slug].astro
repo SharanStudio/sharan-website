@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getData } from '../../lib/data.js';
-import { teamView, initials } from '../../lib/people.js';
+import { teamView, initials, splitBio } from '../../lib/people.js';
 export async function getStaticPaths() {
   const d = await getData();
   return d.teams.map((t) => ({ params: { slug: t.slug }, props: { team: t } }));
@@ -22,10 +22,18 @@ const card = (m) => m;
   </div></div>
   {team.mission && <section class="alt" style="padding:40px 0"><div class="wrap" style="max-width:760px"><h2><small>Mission</small>What this team does</h2><p>{team.mission}</p></div></section>}
   <section><div class="wrap"><h2><small>People</small>Members</h2>
-    <div class="people">{v.current.map((m) => <div class="person">
-      <div class="av lg">{m.photo_path ? <img src={`${base}/${m.photo_path}`} alt={m.full_name} /> : initials(m.full_name)}</div>
-      {m.isLead && <span class="lead">Team lead</span>}<h3>{m.full_name}</h3><div class="role">{m.role}</div>{m.designation && <p>{m.designation}</p>}
-      {m.bio && <p>{m.bio}</p>}{m.linkedin_url && <p><a href={m.linkedin_url}>LinkedIn</a></p>}</div>)}</div>
+    <div class="people">{v.current.map((m) => {
+      const [first, rest] = splitBio(m.bio || '');
+      return <article class="person">
+        <div class="av lg">{m.photo_path ? <img src={`${base}/${m.photo_path}`} alt={m.full_name} /> : initials(m.full_name)}</div>
+        <h3>{m.full_name}</h3>
+        <span class:list={['pill', { lead: m.isLead }]}>{m.isLead ? 'Team lead' : m.role}</span>
+        {m.designation && <p class="desig">{m.designation}</p>}
+        {first && <p class="first">{first}</p>}
+        {rest && <details class="more"><summary><span class="more-open">Know more</span><span class="more-close">Show less</span></summary><p>{rest}</p></details>}
+        {m.linkedin_url && <a class="li" href={m.linkedin_url} target="_blank" rel="noopener">LinkedIn ↗</a>}
+      </article>;
+    })}</div>
     {v.past.length > 0 && <details class="past"><summary>Past members ({v.past.length})</summary>
       <ul class="plist">{v.past.map((m) => <li><b>{m.full_name}</b><span>{[m.role, m.designation].filter(Boolean).join(' · ')}</span></li>)}</ul></details>}
   </div></section>
