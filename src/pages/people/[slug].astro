@@ -1,0 +1,48 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getData } from '../../lib/data.js';
+import { personView, initials } from '../../lib/people.js';
+// One page per public person, generated at build time. Each rebuild picks up new members and changed content.
+export async function getStaticPaths() {
+  const d = await getData();
+  return d.people.map((p) => ({ params: { slug: p.slug }, props: { person: p } }));
+}
+const { person } = Astro.props;
+const d = await getData();
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const v = personView(d, person);
+const paras = (person.bio || '').split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
+const pubLink = (p) => (p.pmid ? `https://pubmed.ncbi.nlm.nih.gov/${p.pmid}/` : p.link || null);
+const roleLabel = (m) => (m.isLead ? 'Team lead' : m.role);
+const yr = (x) => (x ? x.slice(0, 4) : '');
+---
+<Base title={person.full_name} page="Teams" description={person.designation || ''}>
+  <div class="page-head"><div class="wrap">
+    <p class="crumb"><a href={`${base}/teams/`}>← All teams</a></p>
+    <div class="pagehead-person">
+      <div class="av lg">{person.photo_path ? <img src={`${base}/${person.photo_path}`} alt={person.full_name} /> : initials(person.full_name)}</div>
+      <div>
+        <h1>{person.full_name}</h1>
+        {person.designation && <p class="desig">{person.designation}</p>}
+        {v.memberships.filter((m) => m.is_current).map((m) => <span class:list={['pill', { lead: m.isLead }]}>{roleLabel(m)} · {m.team.name}</span>)}
+        <div class="links" style="margin-top:14px">
+          {person.linkedin_url && <a href={person.linkedin_url} target="_blank" rel="noopener">LinkedIn ↗</a>}
+          {person.orcid && <a href={`https://orcid.org/${person.orcid}`} target="_blank" rel="noopener">ORCID ↗</a>}
+        </div>
+      </div>
+    </div>
+  </div></div>
+  {paras.length > 0 && <section><div class="wrap bio"><h2><small>About</small>Profile</h2>{paras.map((t) => <p>{t}</p>)}</div></section>}
+  {v.memberships.length > 0 && <section class="alt"><div class="wrap"><h2><small>Teams</small>Part of</h2>
+    <div class="memberteams">{v.memberships.map((m) => <a class="card" href={`${base}/teams/${m.team_slug}/`}>
+      <div class="meta">{roleLabel(m)} · {m.is_current ? `since ${yr(m.start_date)}` : `${yr(m.start_date)} – ${yr(m.end_date)}`}</div>
+      <h3>{m.team.name}</h3>{m.team.tagline && <p>{m.team.tagline}</p>}</a>)}</div>
+  </div></section>}
+  <section><div class="wrap"><h2><small>Publications</small>Team publications</h2>
+    {v.publications.length ? <>
+      <p class="count">{v.publications.length} {v.publications.length === 1 ? 'publication' : 'publications'} tagged to {v.memberships.length === 1 ? 'this team' : 'these teams'}</p>
+      {v.publications.map((p) => <div class="pub"><div>{p.citation}</div>
+        {pubLink(p) && <a class="pill" href={pubLink(p)}>{p.pmid ? 'PubMed' : 'Link'}</a>}{p.doi && <a class="pill" href={`https://doi.org/${p.doi}`}>DOI</a>}</div>)}
+    </> : <p class="empty">No tagged publications yet.</p>}
+  </div></section>
+</Base>
