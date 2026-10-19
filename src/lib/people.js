@@ -27,3 +27,13 @@ export function splitBio(bio = '') {
   return [text, ''];
 }
 export const plural = (n, one, many = one + 's') => `${n} ${n === 1 ? one : many}`;
+// Everything one member page needs: their teams (current first), and the publications tagged to those teams, newest first.
+export function personView(d, person) {
+  const team = Object.fromEntries(d.teams.map((t) => [t.slug, t]));
+  const memberships = d.team_memberships.filter((m) => m.person_slug === person.slug && team[m.team_slug])
+    .map((m) => ({ ...m, team: team[m.team_slug], isLead: team[m.team_slug].lead_slug === person.slug }))
+    .sort((a, b) => (b.is_current - a.is_current) || a.team.name.localeCompare(b.team.name));
+  const slugs = new Set(memberships.map((m) => m.team_slug));
+  const publications = d.publications.filter((p) => slugs.has(p.team_slug)).sort((a, b) => (b.year || 0) - (a.year || 0));
+  return { memberships, publications };
+}
